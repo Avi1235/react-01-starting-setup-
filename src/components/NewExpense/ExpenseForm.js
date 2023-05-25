@@ -1,44 +1,55 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
 import './ExpenseForm.css';
 
-const ExpenseForm = ({onAddedExpenseData}) => {
-    const [expense, setExpenseForm] = useState({title:'', amount: '', date:''}); 
+const ExpenseForm = ({ onAddedExpenseData, onShowForm }) => {
+  const [expense, setExpenseForm] = useState({ title: '', amount: '', date: '' });
 
-    const handleTitleInput = (event) => {
-        setExpenseForm({
-            ...expense,
-            title: event.target.value,
-        });
+  const handleTitleInput = (event) => {
+    setExpenseForm({
+      ...expense,
+      title: event.target.value,
+    });
+  }
+
+  const handleAmountInput = (event) => {
+    setExpenseForm({
+      ...expense,
+      amount: event.target.value,
+    });
+  }
+
+  const handleDateInput = (event) => {
+    setExpenseForm({
+      ...expense,
+      date: event.target.value,
+    });
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const expenseFormObject = {
+      title: expense.title,
+      amount: +expense.amount,
+      date: new Date(expense.date),
+    };
+
+    if(expenseFormObject.amount !== '' || expenseFormObject.title !== '' || expenseFormObject.date !== '') {
+      onAddedExpenseData(expenseFormObject);
+      setExpenseForm({
+        title: '',
+        amount: '',
+        date: ''
+      });
     }
 
-    const handleAmountInput = (event) => {
-        setExpenseForm({
-            ...expense,
-            amount: event.target.value,
-        });
-    }
+    onShowForm(false);
+  }
 
-    const handleDateInput = (event) => {
-        setExpenseForm({
-            ...expense,
-            date: event.target.value,
-        });
-    }
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const expenseFormObject = {
-            ...expense
-        };
-
-        onAddedExpenseData(expenseFormObject);
-        setExpenseForm({
-            title:'', 
-            amount: '', 
-            date:''
-        });
-    }
+  const closeClickHandler = () => {
+    onShowForm(false);
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -57,7 +68,8 @@ const ExpenseForm = ({onAddedExpenseData}) => {
         </div>
       </div>
       <div className='new-expense__actions'>
-        <button type='submit'>Add Expense</button>
+        <button type='button' onClick={closeClickHandler}>Cancel</button>
+        <button type='submit'>Save Expense</button>
       </div>
     </form>
   );
